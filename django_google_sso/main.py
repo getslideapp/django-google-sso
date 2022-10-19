@@ -99,7 +99,8 @@ class UserHelper:
             self.check_for_permissions(user)
             user.first_name = self.user_info["given_name"]
             user.last_name = self.user_info["family_name"]
-            user.username = self.user_email
+            setattr(user, user.USERNAME_FIELD, self.user_email)
+            setattr(user, user.EMAIL_FIELD, self.user_email)
             user.set_unusable_password()
         user.save()
 

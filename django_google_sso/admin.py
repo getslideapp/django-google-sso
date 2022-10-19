@@ -10,9 +10,6 @@ if conf.GOOGLE_SSO_ENABLED:
 
 User = get_user_model()
 
-if admin.site.is_registered(User):
-    admin.site.unregister(User)
-
 
 class GoogleSSOInlineAdmin(admin.StackedInline):
     model = GoogleSSOUser
@@ -25,7 +22,12 @@ class GoogleSSOAdmin(admin.ModelAdmin):
     readonly_fields = ("google_id",)
 
 
-@admin.register(User)
 class SSOUserAdmin(UserAdmin):
     model = User
     inlines = [GoogleSSOInlineAdmin]
+
+
+if conf.GOOGLE_SSO_PROVIDE_USER_ADMIN_PAGE:
+    if admin.site.is_registered(User):
+        admin.site.unregister(User)
+    admin.site.register(User, SSOUserAdmin)
